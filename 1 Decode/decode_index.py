@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Index every decoded message in a Paper A capture by sample position.
 
-    .venv/bin/python3 analysis/decode_index.py data/pilot/iq/*.iq
-    .venv/bin/python3 analysis/decode_index.py --verify data/pilot/iq/NAME.iq
+    .venv/bin/python3 analysis/decode_index.py --outdir results/campaign/decoded "data/Paper A folder"/Day*/*.iq
+    .venv/bin/python3 analysis/decode_index.py --verify "data/Paper A folder"/Day*/NAME.iq
 
 Runs dump1090 offline on the .iq file with --mlat, converts each message's
 12 MHz timestamp to a sample index, and writes decoded/NAME.csv beside the iq folder:
@@ -36,8 +36,8 @@ MLAT_HZ = 12_000_000
 # and "span" is the whole message's length in samples, preamble included
 # (a Mode A/C reply is about 21 us, a short Mode S message 64 us and a long one
 # 120 us). dump1090 doesn't document the lead, so we measured it with --verify
-# on 500 messages of each kind from a pilot recording, and checked it again on
-# the campaign. The Mode A/C entry is a few samples wider than measured, so a
+# on 500 messages of each kind from a recording made before the campaign, and
+# checked it again on the campaign. The Mode A/C entry is a few samples wider than measured, so a
 # soft edge isn't left out.
 
 KINDS = {
