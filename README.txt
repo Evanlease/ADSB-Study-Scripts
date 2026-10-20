@@ -147,9 +147,8 @@ Below, "Reads" is what a step takes in, "Calls" is the helpers it uses, and
       Makes:  injection_campaign.csv, injection_campaign_summary.csv
 
    6  campaignFigures   (5 Figures)
-      Draws the eight figures of the long version of the paper. Two of them,
-      fig01_session.png and fig05_estimators.png, are the article's
-      Supplementary Figures S1 and S2.
+      Draws the eight figures of an earlier, longer version of the paper. The
+      article doesn't use them; step 8 draws its figures.
       Reads:  minutes_flagged.csv, sessions.csv, floor_by_session.csv,
               blocks.csv, twins.csv, preambles.csv,
               injection_campaign_summary.csv, injection_summary.csv
@@ -166,12 +165,12 @@ Below, "Reads" is what a step takes in, "Calls" is the helpers it uses, and
       Makes:  day_sensitivity.csv, day_sensitivity.txt
 
    8  journalFigures   (5 Figures)
-      Draws Figures 1 to 4 of the article.
+      Draws the article's five figures.
       Reads:  minutes_flagged.csv, sessions.csv, floor_by_session.csv,
               blocks.csv, twins.csv, preambles.csv,
               injection_campaign_summary.csv
       Calls:  readCampaign
-      Makes:  fig1_floor_gap.png to fig4_overload.png
+      Makes:  fig_session.png, and fig1_floor_gap.png to fig4_overload.png
 
 injection_summary.csv is a decode curve from made-up noise, made with earlier
 code that isn't in this folder. Step 5 measures how far each control sits
@@ -214,7 +213,7 @@ HOW THE DATA MOVES
                eight figures
 
 campaignFigures also reads the tables from steps 2 and 3. journalFigures
-(step 8) reads the same campaign tables and draws the article's four
+(step 8) reads the same campaign tables and draws the article's five
 figures.
 
 
