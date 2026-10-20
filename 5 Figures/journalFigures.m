@@ -22,6 +22,32 @@ verm = [0.835 0.369 0];   grn  = [0 0.620 0.451];  purp = [0.8 0.475 0.655];
 grey = [0.6 0.6 0.6];     fs = 7;  W = 4.8;
 H = S(S.inSet, :);
 
+% The session diagram: the warm-up and then the five recordings in order. The
+% warm-up is drawn shorter than to scale so the labels fit.
+
+fig = newFig(W, 1.1);
+ax = axes(fig, 'Position', [0.01 0.04 0.98 0.80]);  hold(ax, 'on');  axis(ax, 'off');
+x0 = [0 2 3 4 5 6];  w = [2 1 1 1 1 1];
+lab = {sprintf('warm-up at 1090 MHz\n300 s, not kept'), sprintf('1090 MHz\n60 s'), sprintf('control\n1082 or 1098'), ...
+       sprintf('1090 MHz\n60 s'), sprintf('other control\n1098 or 1082'), sprintf('1090 MHz\n60 s')};
+sky = [0.337 0.706 0.914];
+col = {[0.92 0.92 0.92], sky, orng, sky, orng, sky};
+
+% Then we start a for loop that draws each block with its label, and numbers
+% the five recordings above them.
+
+for j = 1:6
+    rectangle(ax, 'Position', [x0(j) 0 w(j) 1], 'FaceColor', col{j}, 'EdgeColor', ink, 'LineWidth', 0.8);
+    text(ax, x0(j) + w(j) / 2, 0.5, lab{j}, 'HorizontalAlignment', 'center', 'FontSize', fs - 0.5, 'Color', ink);
+
+    if j > 1
+        text(ax, x0(j) + 0.5, 1.14, sprintf('r%d', j - 1), 'HorizontalAlignment', 'center', 'FontSize', fs, 'FontWeight', 'bold');
+    end
+end
+
+xlim(ax, [-0.04 7.04]);  ylim(ax, [-0.04 1.3]);
+exportgraphics(fig, fullfile(figDir, 'fig_session.png'), 'Resolution', 300);  close(fig);
+
 % Figure 1, panel (a): each session's control floor over the week, marking
 % session 2 (the phone) and the day 6 sessions with overloaded recordings.
 
