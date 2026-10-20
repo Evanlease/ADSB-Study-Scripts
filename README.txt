@@ -13,8 +13,12 @@ Resist Traffic, and What the Background Costs in Detections". It holds only
 the scripts that produced the paper's numbers and figures, and this file
 explains the order they ran in.
 
-The recordings aren't included (140 files, 38 GB), so the code can't run as
-it is. "What you'd need to run it" at the bottom says what's missing.
+The recordings aren't in this folder. They're on Zenodo, with the decoded
+messages and every result table the scripts made:
+
+  https://doi.org/10.5281/zenodo.23489397
+
+"What you'd need to run it" at the bottom says what else the code needs.
 
 
 THE STUDY IN BRIEF
@@ -73,7 +77,7 @@ WORDS USED BELOW
 
 THE ORDER THE SCRIPTS RAN IN
 
-There are seven steps. Each one needs the tables made by the steps above it,
+There are eight steps. Each one needs the tables made by the steps above it,
 so they have to run in this order.
 
    Step  Script                    Folder
@@ -85,10 +89,11 @@ so they have to run in this order.
     5    campaignInjection         4 Twins and sensitivity
     6    campaignFigures           5 Figures
     7    campaignDaySensitivity    3 Statistics
+    8    journalFigures            5 Figures
 
 Steps 4 and 5 don't depend on each other, so either can go first. Step 7
 was added after all the results were in, as a later check, and it only needs
-step 3.
+step 3. Step 8 only needs steps 2 to 5, so it can run any time after them.
 
 Below, "Reads" is what a step takes in, "Calls" is the helpers it uses, and
 "Makes" is what it saves.
@@ -135,18 +140,19 @@ Below, "Reads" is what a step takes in, "Calls" is the helpers it uses, and
    5  campaignInjection   (4 Twins and sensitivity)
       Adds test messages at 23 levels from 0 to 22 dB to one real control per
       session, and finds the SNR at which half and 90% of them decode.
-      Reads:  minutes_flagged.csv, the control recordings, and the pilot's
+      Reads:  minutes_flagged.csv, the control recordings, and
               injection_summary.csv (see below)
       Calls:  colorTwin, injectFrames, modesFrame, readCampaign, readUC8,
               runDump1090, spearmanRho, writeUC8
       Makes:  injection_campaign.csv, injection_campaign_summary.csv
 
    6  campaignFigures   (5 Figures)
-      Draws the paper's eight figures.
+      Draws the eight figures of the long version of the paper. Two of them,
+      fig01_session.png and fig05_estimators.png, are the article's
+      Supplementary Figures S1 and S2.
       Reads:  minutes_flagged.csv, sessions.csv, floor_by_session.csv,
               blocks.csv, twins.csv, preambles.csv,
-              injection_campaign_summary.csv, the pilot's
-              injection_summary.csv
+              injection_campaign_summary.csv, injection_summary.csv
       Calls:  readCampaign, spearmanRho
       Makes:  fig01_session.png to fig08_overload.png
 
@@ -159,9 +165,18 @@ Below, "Reads" is what a step takes in, "Calls" is the helpers it uses, and
       Calls:  bootCI, rankAvg, readCampaign, signrankTest, spearmanRho
       Makes:  day_sensitivity.csv, day_sensitivity.txt
 
-The pilot's injection_summary.csv is the decode curve from a one-day pilot
-study (September 21, 2026). The pilot's code isn't in this folder. Steps 5
-and 6 only read that one table from it.
+   8  journalFigures   (5 Figures)
+      Draws Figures 1 to 4 of the article.
+      Reads:  minutes_flagged.csv, sessions.csv, floor_by_session.csv,
+              blocks.csv, twins.csv, preambles.csv,
+              injection_campaign_summary.csv
+      Calls:  readCampaign
+      Makes:  fig1_floor_gap.png to fig4_overload.png
+
+injection_summary.csv is a decode curve from made-up noise, made with earlier
+code that isn't in this folder. Step 5 measures how far each control sits
+from it, and step 6 draws it in one figure of the long version. The article
+uses neither.
 
 
 HOW THE DATA MOVES
@@ -198,12 +213,14 @@ HOW THE DATA MOVES
                      v
                eight figures
 
-campaignFigures also reads the tables from steps 2 and 3.
+campaignFigures also reads the tables from steps 2 and 3. journalFigures
+(step 8) reads the same campaign tables and draws the article's four
+figures.
 
 
 HOW THE CODE IS ORGANIZED
 
-There are 25 files: about 1,000 lines of MATLAB and 140 lines of Python. They
+There are 26 files: about 1,150 lines of MATLAB and 140 lines of Python. They
 come in four kinds.
 
   Settings (1 file)
@@ -213,7 +230,7 @@ come in four kinds.
   Decoding (1 file)
       decode_index.py is the one Python script.
 
-  Scripts (6 files)
+  Scripts (7 files)
       Each script runs one MATLAB step from start to finish.
 
   Helpers (17 files)
@@ -304,8 +321,9 @@ WHAT YOU'D NEED TO RUN IT
     change both for your machine.
   - Python 3 for decode_index.py. Decoding needs only the standard library;
     its --verify check also needs numpy.
-  - The recordings and their manifest. They're raw 8-bit I and Q, the format
-    rtl_sdr writes, 288,000,000 bytes each.
+  - The recordings and their manifest, from the Zenodo record above. They're
+    raw 8-bit I and Q, the format rtl_sdr writes, 288,000,000 bytes each.
+    The dataset's own README.txt says where each of its folders goes.
 
 The made-up noise, the test messages, the bootstraps and the permutations all
 use fixed random seeds, so they come out the same every time.
