@@ -5,7 +5,7 @@ cfg = expConfig();
 R = readCampaign(fullfile(cfg.outDir, 'minutes_flagged.csv'));
 
 % Then we build the receiver's filter from how alike neighboring bytes are on
-% the headline controls, the same way the pilot did.
+% the headline controls.
 
 ctl = R.role ~= "1090" & R.headline;
 target = mean([R.acf1(ctl), R.acf2(ctl), R.acf3(ctl)], 1);
@@ -13,7 +13,7 @@ target = mean([R.acf1(ctl), R.acf2(ctl), R.acf3(ctl)], 1);
 
 N = cfg.nSamples;  mu = 127.397;  icaoBase = hex2dec('AB0000');
 
-% Next we lay out the pilot's exact test messages: 23 SNR levels with 900
+% Next we lay out the test messages: 23 SNR levels with 900
 % messages each, in random order, 3,400 samples apart.
 
 snrDb = 0:22;  nL = numel(snrDb);  nPer = 900;  spacing = 3400;
@@ -89,9 +89,8 @@ for s = unique(R.session(R.headline))'
 
 end
 
-% Next we read the pilot's curve from made-up noise and find how far each
-% recording sits from it at its own sigma. (The pilot also measured that a real
-% recording, rounded twice, sits about 0.26 dB above it.)
+% Next we read the decode curve from made-up noise (injection_summary.csv)
+% and find how far each recording sits from it at its own sigma.
 
 Ps = readtable(fullfile(cfg.root, 'results', 'pilot', 'injection_summary.csv'), 'TextType', 'string');
 Ps = Ps(Ps.source == "synthetic", :);
@@ -103,7 +102,7 @@ S.resid50 = S.snr50 - S.pilot50;  S.resid90 = S.snr90 - S.pilot90;
 writetable(P, fullfile(cfg.outDir, 'injection_campaign.csv'));
 writetable(S, fullfile(cfg.outDir, 'injection_campaign_summary.csv'));
 
-% Lastly, we summarize how far the recordings sat from the pilot's curve, and
+% Lastly, we summarize how far the recordings sat from that curve, and
 % how SNR50 moves with the background across sessions.
 
 fprintf('C3b n = %d sessions, sigma %.3f to %.3f LSB\n', height(S), min(S.sigma), max(S.sigma));
